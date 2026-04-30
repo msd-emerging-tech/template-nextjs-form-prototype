@@ -121,3 +121,39 @@ The deployment system expects:
 - One exposed port (3000)
 - One health check endpoint (/health)
 - No manual configuration
+
+## Platform Deployment Contract
+
+This template is designed for deployment on the prototype platform:
+
+- **Deployment URL:** `https://etag-main-vm.australiaeast.cloudapp.azure.com/<slug>`
+- **BASE_PATH:** Set at build time (e.g., `/my-prototype`)
+- **PORT:** Configurable via environment variable (default: 3000)
+- **Output:** Next.js standalone mode
+- **Health Check:** `/health` returns `{ "status": "ok" }`
+- **Reverse Proxy:** Runs behind Caddy
+
+### Build Args
+
+- `BASE_PATH`: Subpath where app is mounted (required for correct asset loading)
+- `CACHEBUST`: Cache-busting value (git commit SHA)
+
+### Environment Variables
+
+- `PORT`: Port to bind to (default: 3000)
+- `NODE_ENV`: Environment mode (production in containers)
+- `BASE_PATH`: Build-time path prefix (set via Docker build arg)
+
+### Local Development
+
+For local development at root path:
+```bash
+npm run dev
+# Runs at http://localhost:3000
+```
+
+To test with BASE_PATH locally:
+```bash
+BASE_PATH=/test-path npm run dev
+# Runs at http://localhost:3000/test-path
+```
